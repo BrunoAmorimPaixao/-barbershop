@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agendamentos | Barbershop</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div class="page">
+    <div th:replace="~{fragments :: menu}"></div>
+    <header class="hero">
+        <h1>Agendamentos</h1>
+        <p>Organize os atendimentos da barbearia e sincronize com o Google Calendar.</p>
+    </header>
+
+    <section class="grid">
+        <form th:action="@{/appointments}" th:object="${appointmentForm}" method="post" class="card form-card">
+            <h2>Novo agendamento</h2>
+            <label>Nome do cliente <input type="text" th:field="*{clientName}"></label>
+            <label>Barbeiro
+                <select th:field="*{barberId}">
+                    <option value="">Selecione</option>
+                    <option th:each="item : ${barbers}" th:value="${item.id}" th:text="${item.name}"></option>
+                </select>
+            </label>
+            <label>Servico
+                <select th:field="*{serviceId}">
+                    <option value="">Selecione</option>
+                    <option th:each="item : ${services}" th:value="${item.id}" th:text="${item.name}"></option>
+                </select>
+            </label>
+            <label>Data e hora <input type="datetime-local" th:field="*{appointmentDateTime}"></label>
+            <label>Observacoes <textarea th:field="*{notes}"></textarea></label>
+            <button type="submit">Agendar</button>
+        </form>
+
+        <div class="card">
+            <h2>Agenda</h2>
+            <table>
+                <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Barbeiro</th>
+                    <th>Servico</th>
+                    <th>Horario</th>
+                    <th>Google</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${appointments}">
+                    <td th:text="${item.client.name}"></td>
+                    <td th:text="${item.barber.name}"></td>
+                    <td th:text="${item.service.name}"></td>
+                    <td th:text="${#temporals.format(item.appointmentDateTime, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${item.googleCalendarEventId}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+</body>
+</html>

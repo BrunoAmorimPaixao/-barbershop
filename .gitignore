@@ -1,0 +1,7 @@
+/target/
+/.env
+/google-calendar-service-account.json
+/src/main/resources/google-calendar-service-account.json
+/frontend/node_modules/
+/frontend/dist/
+/.tools/

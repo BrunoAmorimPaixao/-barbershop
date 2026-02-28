@@ -1,0 +1,11 @@
+
+> barbershop-frontend@0.0.1 dev
+> vite --host 0.0.0.0
+
+Port 5173 is in use, trying another one...
+
+  VITE v5.4.21  ready in 111 ms
+
+  ➜  Local:   http://localhost:5174/
+  ➜  Network: http://192.168.15.12:5174/
+  ➜  Network: http://172.20.0.1:5174/
