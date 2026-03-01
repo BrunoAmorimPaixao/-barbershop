@@ -1,6 +1,7 @@
 package com.barbershop.api;
 
 import com.barbershop.api.response.ErrorResponse;
+import com.barbershop.service.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,12 @@ public class ApiExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleIllegalArgument(IllegalArgumentException exception) {
+        return new ErrorResponse(exception.getMessage(), List.of());
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequest(BadRequestException exception) {
         return new ErrorResponse(exception.getMessage(), List.of());
     }
 

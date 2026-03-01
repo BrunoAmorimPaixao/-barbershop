@@ -12,6 +12,9 @@ public class AppointmentForm {
     @NotBlank
     private String clientName;
 
+    @NotBlank
+    private String idempotencyKey;
+
     @NotNull
     private Long barberId;
 
@@ -31,6 +34,14 @@ public class AppointmentForm {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+
+    public String getIdempotencyKey() {
+        return idempotencyKey;
+    }
+
+    public void setIdempotencyKey(String idempotencyKey) {
+        this.idempotencyKey = idempotencyKey;
     }
 
     public Long getBarberId() {

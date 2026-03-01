@@ -48,6 +48,9 @@ public class Appointment {
     @Column(length = 255)
     private String googleCalendarEventId;
 
+    @Column(unique = true, length = 100)
+    private String idempotencyKey;
+
     public Long getId() {
         return id;
     }
@@ -102,5 +105,13 @@ public class Appointment {
 
     public void setGoogleCalendarEventId(String googleCalendarEventId) {
         this.googleCalendarEventId = googleCalendarEventId;
+    }
+
+    public String getIdempotencyKey() {
+        return idempotencyKey;
+    }
+
+    public void setIdempotencyKey(String idempotencyKey) {
+        this.idempotencyKey = idempotencyKey;
     }
 }
