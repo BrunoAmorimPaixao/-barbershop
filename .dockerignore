@@ -1,0 +1,8 @@
+**/.git
+**/.idea
+**/node_modules
+**/dist
+**/.run
+**/*.log
+Dockerfile.frontend
+k8s

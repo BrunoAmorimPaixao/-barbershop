@@ -18,6 +18,13 @@ import {
 import { fetchJson, login, postJson } from "./lib/api";
 import { formatDate, formatMoney, toApiDateTime } from "./lib/formatters";
 
+const sections = [
+  { id: "appointments", label: "Agendamentos" },
+  { id: "clients", label: "Clientes" },
+  { id: "services", label: "Servicos" },
+  { id: "barbers", label: "Barbeiros" }
+];
+
 function App() {
   const [auth, setAuth] = useState(() => readStoredAuth());
   const [clients, setClients] = useState([]);
@@ -29,6 +36,7 @@ function App() {
   const [barberForm, setBarberForm] = useState(initialBarber);
   const [serviceForm, setServiceForm] = useState(initialService);
   const [appointmentForm, setAppointmentForm] = useState(initialAppointment);
+  const [activeSection, setActiveSection] = useState("appointments");
   const [status, setStatus] = useState({ type: "idle", message: "" });
   const [loading, setLoading] = useState(true);
 
@@ -121,158 +129,175 @@ function App() {
         onLogout={handleLogout}
       />
 
-      <main className="dashboard">
-        <Panel
-          title="Agendamentos"
-          subtitle="Area principal da operacao diaria da barbearia"
-          className="panel-appointment"
-        >
-          <form
-            className="entity-form entity-form-appointment"
-            onSubmit={(event) => {
-              event.preventDefault();
-              handleSubmit(
-                "/appointments",
-                {
-                  ...appointmentForm,
-                  clientName: appointmentForm.clientName,
-                  barberId: Number(appointmentForm.barberId),
-                  serviceId: Number(appointmentForm.serviceId),
-                  appointmentDateTime: toApiDateTime(appointmentForm.appointmentDateTime)
-                },
-                () => setAppointmentForm(initialAppointment)
-              );
-            }}
+      <nav className="section-menu" aria-label="Menu principal">
+        {sections.map((section) => (
+          <button
+            key={section.id}
+            type="button"
+            className={activeSection === section.id ? "is-active" : ""}
+            onClick={() => setActiveSection(section.id)}
           >
-            <Field
-              label="Nome do cliente"
-              name="clientName"
-              type="text"
-              value={appointmentForm.clientName}
-              onChange={setAppointmentForm}
-            />
-            <SelectField
-              label="Barbeiro"
-              name="barberId"
-              value={appointmentForm.barberId}
-              options={barbers.map((item) => ({ value: item.id, label: item.name }))}
-              onChange={setAppointmentForm}
-            />
-            <SelectField
-              label="Servico"
-              name="serviceId"
-              value={appointmentForm.serviceId}
-              options={services.map((item) => ({ value: item.id, label: item.name }))}
-              onChange={setAppointmentForm}
-            />
-            <Field
-              label="Data e hora"
-              name="appointmentDateTime"
-              type="datetime-local"
-              value={appointmentForm.appointmentDateTime}
-              onChange={setAppointmentForm}
-            />
-            <Field
-              label="Observacoes"
-              name="notes"
-              type="textarea"
-              value={appointmentForm.notes}
-              onChange={setAppointmentForm}
-            />
-            <button type="submit">Agendar horario</button>
-          </form>
+            {section.label}
+          </button>
+        ))}
+      </nav>
 
-          <Table
-            columns={["Cliente", "Barbeiro", "Servico", "Horario", "Google"]}
-            rows={appointments.map((item) => [
-              item.clientName,
-              item.barberName,
-              item.serviceName,
-              formatDate(item.appointmentDateTime),
-              item.googleCalendarEventId || "-"
-            ])}
-            emptyLabel="Nenhum agendamento cadastrado."
-          />
-        </Panel>
+      <main className="dashboard dashboard-single">
+        {activeSection === "appointments" && (
+          <Panel title="Agendamentos" subtitle="Area principal da operacao diaria da barbearia">
+            <form
+              className="entity-form entity-form-appointment"
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleSubmit(
+                  "/appointments",
+                  {
+                    ...appointmentForm,
+                    clientName: appointmentForm.clientName,
+                    barberId: Number(appointmentForm.barberId),
+                    serviceId: Number(appointmentForm.serviceId),
+                    appointmentDateTime: toApiDateTime(appointmentForm.appointmentDateTime)
+                  },
+                  () => setAppointmentForm(initialAppointment)
+                );
+              }}
+            >
+              <Field
+                label="Nome do cliente"
+                name="clientName"
+                type="text"
+                value={appointmentForm.clientName}
+                onChange={setAppointmentForm}
+              />
+              <SelectField
+                label="Barbeiro"
+                name="barberId"
+                value={appointmentForm.barberId}
+                options={barbers.map((item) => ({ value: item.id, label: item.name }))}
+                onChange={setAppointmentForm}
+              />
+              <SelectField
+                label="Servico"
+                name="serviceId"
+                value={appointmentForm.serviceId}
+                options={services.map((item) => ({ value: item.id, label: item.name }))}
+                onChange={setAppointmentForm}
+              />
+              <Field
+                label="Data e hora"
+                name="appointmentDateTime"
+                type="datetime-local"
+                value={appointmentForm.appointmentDateTime}
+                onChange={setAppointmentForm}
+              />
+              <Field
+                label="Observacoes"
+                name="notes"
+                type="textarea"
+                value={appointmentForm.notes}
+                onChange={setAppointmentForm}
+              />
+              <button type="submit">Agendar horario</button>
+            </form>
 
-        <Panel title="Clientes" subtitle="Base de atendimento da barbearia">
-          <EntityForm
-            fields={[
-              { name: "name", label: "Nome", type: "text" },
-              { name: "email", label: "E-mail", type: "email" },
-              { name: "phone", label: "Telefone", type: "text" }
-            ]}
-            values={clientForm}
-            onChange={setClientForm}
-            buttonLabel="Cadastrar cliente"
-            onSubmit={(event) => {
-              event.preventDefault();
-              handleSubmit("/clients", clientForm, () => setClientForm(initialClient));
-            }}
-          />
-          <Table
-            columns={["Nome", "E-mail", "Telefone"]}
-            rows={clients.map((item) => [item.name, item.email, item.phone])}
-            emptyLabel="Nenhum cliente cadastrado."
-          />
-        </Panel>
+            <Table
+              columns={["Cliente", "Barbeiro", "Servico", "Horario", "Google"]}
+              rows={appointments.map((item) => [
+                item.clientName,
+                item.barberName,
+                item.serviceName,
+                formatDate(item.appointmentDateTime),
+                item.googleCalendarEventId || "-"
+              ])}
+              emptyLabel="Nenhum agendamento cadastrado."
+            />
+          </Panel>
+        )}
 
-        <Panel title="Barbeiros" subtitle="Equipe e especialidades">
-          <EntityForm
-            fields={[
-              { name: "name", label: "Nome", type: "text" },
-              { name: "specialty", label: "Especialidade", type: "textarea" }
-            ]}
-            values={barberForm}
-            onChange={setBarberForm}
-            buttonLabel="Cadastrar barbeiro"
-            onSubmit={(event) => {
-              event.preventDefault();
-              handleSubmit("/barbers", barberForm, () => setBarberForm(initialBarber));
-            }}
-          />
-          <Table
-            columns={["Nome", "Especialidade"]}
-            rows={barbers.map((item) => [item.name, item.specialty || "-"])}
-            emptyLabel="Nenhum barbeiro cadastrado."
-          />
-        </Panel>
+        {activeSection === "clients" && (
+          <Panel title="Clientes" subtitle="Base de atendimento da barbearia">
+            <EntityForm
+              fields={[
+                { name: "name", label: "Nome", type: "text" },
+                { name: "email", label: "E-mail", type: "email" },
+                { name: "phone", label: "Telefone", type: "text" }
+              ]}
+              values={clientForm}
+              onChange={setClientForm}
+              buttonLabel="Cadastrar cliente"
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleSubmit("/clients", clientForm, () => setClientForm(initialClient));
+              }}
+            />
+            <Table
+              columns={["Nome", "E-mail", "Telefone"]}
+              rows={clients.map((item) => [item.name, item.email, item.phone])}
+              emptyLabel="Nenhum cliente cadastrado."
+            />
+          </Panel>
+        )}
 
-        <Panel title="Servicos" subtitle="Catalogo de atendimento">
-          <EntityForm
-            fields={[
-              { name: "name", label: "Nome", type: "text" },
-              { name: "type", label: "Tipo", type: "select", options: serviceTypes },
-              { name: "price", label: "Preco", type: "number", step: "0.01" },
-              { name: "durationMinutes", label: "Duracao", type: "number" }
-            ]}
-            values={serviceForm}
-            onChange={setServiceForm}
-            buttonLabel="Cadastrar servico"
-            onSubmit={(event) => {
-              event.preventDefault();
-              handleSubmit(
-                "/services",
-                {
-                  ...serviceForm,
-                  price: Number(serviceForm.price),
-                  durationMinutes: Number(serviceForm.durationMinutes)
-                },
-                () => setServiceForm(initialService)
-              );
-            }}
-          />
-          <Table
-            columns={["Nome", "Tipo", "Preco", "Duracao"]}
-            rows={services.map((item) => [
-              item.name,
-              item.type,
-              formatMoney(item.price),
-              `${item.durationMinutes} min`
-            ])}
-            emptyLabel="Nenhum servico cadastrado."
-          />
-        </Panel>
+        {activeSection === "services" && (
+          <Panel title="Servicos" subtitle="Catalogo de atendimento">
+            <EntityForm
+              fields={[
+                { name: "name", label: "Nome", type: "text" },
+                { name: "type", label: "Tipo", type: "select", options: serviceTypes },
+                { name: "price", label: "Preco", type: "number", step: "0.01" },
+                { name: "durationMinutes", label: "Duracao", type: "number" }
+              ]}
+              values={serviceForm}
+              onChange={setServiceForm}
+              buttonLabel="Cadastrar servico"
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleSubmit(
+                  "/services",
+                  {
+                    ...serviceForm,
+                    price: Number(serviceForm.price),
+                    durationMinutes: Number(serviceForm.durationMinutes)
+                  },
+                  () => setServiceForm(initialService)
+                );
+              }}
+            />
+            <Table
+              columns={["Nome", "Tipo", "Preco", "Duracao"]}
+              rows={services.map((item) => [
+                item.name,
+                item.type,
+                formatMoney(item.price),
+                `${item.durationMinutes} min`
+              ])}
+              emptyLabel="Nenhum servico cadastrado."
+            />
+          </Panel>
+        )}
+
+        {activeSection === "barbers" && (
+          <Panel title="Barbeiros" subtitle="Equipe e especialidades">
+            <EntityForm
+              fields={[
+                { name: "name", label: "Nome", type: "text" },
+                { name: "specialty", label: "Especialidade", type: "textarea" }
+              ]}
+              values={barberForm}
+              onChange={setBarberForm}
+              buttonLabel="Cadastrar barbeiro"
+              onSubmit={(event) => {
+                event.preventDefault();
+                handleSubmit("/barbers", barberForm, () => setBarberForm(initialBarber));
+              }}
+            />
+            <Table
+              columns={["Nome", "Especialidade"]}
+              rows={barbers.map((item) => [item.name, item.specialty || "-"])}
+              emptyLabel="Nenhum barbeiro cadastrado."
+            />
+          </Panel>
+        )}
       </main>
     </div>
   );

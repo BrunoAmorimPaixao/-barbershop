@@ -158,6 +158,29 @@ textarea {
   margin: 20px 0 24px;
 }
 
+.section-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 24px;
+}
+
+.section-menu button {
+  border: 1px solid rgba(27, 23, 20, 0.14);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: rgba(255, 250, 242, 0.72);
+  color: var(--ink);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.section-menu button.is-active {
+  border-color: transparent;
+  color: #fff;
+  background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+}
+
 .status-actions {
   display: flex;
   flex-wrap: wrap;
@@ -228,6 +251,10 @@ textarea {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
+}
+
+.dashboard-single {
+  grid-template-columns: 1fr;
 }
 
 .panel-appointment {

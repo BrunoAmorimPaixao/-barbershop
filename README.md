@@ -98,6 +98,51 @@ Para parar tudo:
 ./stop-all.sh
 ```
 
+## Rodar no Kubernetes local com Minikube + k9s
+
+### Requisitos
+
+- minikube
+- kubectl
+- docker
+- k9s
+- Maven 3.9+
+
+### Deploy com um comando
+
+```bash
+./k8s-up.sh
+```
+
+Esse script:
+
+- sobe o minikube
+- builda as imagens `barbershop-backend:local` e `barbershop-frontend:local`
+- aplica os manifests em `k8s/`
+
+### Abrir aplicacao
+
+```bash
+minikube service frontend -n barbershop
+```
+
+### Monitorar no k9s
+
+```bash
+k9s
+```
+
+Dentro do `k9s`, use:
+
+- `:ns barbershop`
+- `pods`, `svc`, `deploy`
+
+### Remover resources
+
+```bash
+./k8s-down.sh
+```
+
 ## Configurar Google Calendar
 
 Por padrao, a integracao fica desabilitada e o sistema grava um identificador ficticio no agendamento.
