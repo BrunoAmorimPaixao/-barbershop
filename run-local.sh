@@ -9,4 +9,5 @@ fi
 
 set +a
 
+cd backend
 mvn spring-boot:run

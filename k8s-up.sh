@@ -28,8 +28,11 @@ echo "Usando docker daemon do minikube..."
 eval "$(minikube -p minikube docker-env)"
 
 echo "Build do backend..."
-mvn -DskipTests clean package
-docker build -t barbershop-backend:local .
+(
+  cd backend
+  mvn -DskipTests clean package
+)
+docker build -t barbershop-backend:local ./backend
 
 echo "Build do frontend..."
 docker build -t barbershop-frontend:local ./frontend

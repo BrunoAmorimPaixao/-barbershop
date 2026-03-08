@@ -175,5 +175,5 @@ APP_GOOGLE_CALENDAR_CREDENTIALS_LOCATION=file:./google-calendar-service-account.
 
 ## Estrutura
 
-- `src/main/java`: backend Spring Boot
+- `backend`: backend Spring Boot (Maven + `src/main/java`)
 - `frontend`: frontend React separado do backend

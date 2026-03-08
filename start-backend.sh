@@ -3,8 +3,9 @@
 set -e
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BACKEND_DIR="$ROOT_DIR/backend"
 
-cd "$ROOT_DIR"
+cd "$BACKEND_DIR"
 
 POSTGRES_PORT="${POSTGRES_PORT:-5433}"
 SPRING_DATASOURCE_URL="${SPRING_DATASOURCE_URL:-jdbc:postgresql://localhost:${POSTGRES_PORT}/barbershop}"
